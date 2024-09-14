@@ -3,6 +3,8 @@ package com.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.model.ComplexIfElseLoopInput;
+import com.model.ComplexLoopInput;
 import com.model.IfElseInput;
 import com.model.LoopInput;
 import com.model.NestedIfElseInput;
@@ -41,4 +43,15 @@ public class FlowDiagramController {
     public String convertSwitchCase(@RequestBody SwitchCaseInput input) {
         return flowDiagramService.convertSwitchCase(input);
     }
+    
+    @PostMapping("/complex-loop")
+    public String convertComplexLoop(@RequestBody ComplexLoopInput input) {
+        return flowDiagramService.convertComplexLoop(input);
+    }
+    
+    @PostMapping("/complex-if-else-loop")
+    public String convertComplexIfElseLoop(@RequestBody ComplexIfElseLoopInput input) {
+        return flowDiagramService.convertComplexIfElseLoop(input);
+    }
+    
 }

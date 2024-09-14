@@ -2,6 +2,8 @@ package com.service;
 
 import org.springframework.stereotype.Service;
 
+import com.model.ComplexIfElseLoopInput;
+import com.model.ComplexLoopInput;
 import com.model.IfElseInput;
 import com.model.LoopInput;
 import com.model.NestedIfElseInput;
@@ -88,4 +90,48 @@ public class FlowDiagramService {
         code.append("}");
         return code.toString();
     }
+    
+    public String convertComplexLoop(ComplexLoopInput input) {
+        StringBuilder code = new StringBuilder();
+        code.append("public static void main(String[] args) {\n");
+        code.append("    ").append(input.getArrayInitialization()).append(";\n");
+        code.append("    for (").append(input.getLoopInitialization()).append("; ")
+            .append(input.getLoopCondition()).append("; ")
+            .append(input.getLoopUpdate()).append(") {\n");
+        code.append("        if (").append(input.getIfCondition()).append(") {\n");
+        code.append("            ").append(input.getIfStatement()).append("\n");
+        code.append("        } else {\n");
+        code.append("            ").append(input.getElseStatement()).append("\n");
+        code.append("        }\n");
+        code.append("    }\n");
+        code.append("}");
+        return code.toString();
+    }
+    
+    public String convertComplexIfElseLoop(ComplexIfElseLoopInput input) {
+        StringBuilder code = new StringBuilder();
+        code.append("public static void main(String[] args) {\n");
+        code.append("    ").append(input.getArrayInitialization()).append(";\n");
+        code.append("    ").append(input.getConditionVariable()).append(";\n\n");
+        code.append("    if (").append(input.getMainCondition()).append(") {\n");
+        code.append("        ").append(input.getTrueBlockPrint()).append("\n\n");
+        appendLoopCode(code, input.getTrueLoop());
+        code.append("    } else {\n");
+        code.append("        ").append(input.getFalseBlockPrint()).append("\n\n");
+        appendLoopCode(code, input.getFalseLoop());
+        code.append("    }\n");
+        code.append("}");
+        return code.toString();
+    }
+
+    private void appendLoopCode(StringBuilder code, LoopInput loopInput) {
+        code.append("        for (").append(loopInput.getInitialization()).append("; ")
+            .append(loopInput.getCondition()).append("; ")
+            .append(loopInput.getUpdate()).append(") {\n");
+        code.append("            if (").append(loopInput.getCheckCondition()).append(") {\n");
+        code.append("                ").append(loopInput.getStatement()).append("\n");
+        code.append("            }\n");
+        code.append("        }\n");
+    }
+    
 }
