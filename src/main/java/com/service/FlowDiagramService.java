@@ -6,44 +6,59 @@ import com.model.ComplexIfElseLoopInput;
 import com.model.ComplexLoopInput;
 import com.model.IfElseInput;
 import com.model.LoopInput;
-import com.model.NestedIfElseInput;
+
 
 import com.model.SwitchCaseInput;
 
 @Service
 public class FlowDiagramService {
 
-    public String convertIfElse(IfElseInput input) {
-    	
+	/*
+	 * public String convertIfElse(IfElseInput input) {
+	 * 
+	 * StringBuilder code = new StringBuilder();
+	 * code.append("public static void main(String[] args) {\n");
+	 * code.append("    if (").append(input.getCondition()).append(") {\n");
+	 * code.append("        ").append(input.getTrueStatement()).append("\n");
+	 * code.append("    } else {\n");
+	 * code.append("        ").append(input.getFalseStatement()).append("\n");
+	 * code.append("    }\n"); code.append("}"); return code.toString(); }
+	 */
+
+    public String convertIfElse(IfElseInput ifElseInput) {
         StringBuilder code = new StringBuilder();
         code.append("public static void main(String[] args) {\n");
-        code.append("    if (").append(input.getCondition()).append(") {\n");
-        code.append("        ").append(input.getTrueStatement()).append("\n");
-        code.append("    } else {\n");
-        code.append("        ").append(input.getFalseStatement()).append("\n");
-        code.append("    }\n");
+        appendIfElse(code, ifElseInput, 1);
         code.append("}");
         return code.toString();
     }
 
-    public String convertNestedIfElse(NestedIfElseInput input) {
-        StringBuilder code = new StringBuilder();
-        code.append("public static void main(String[] args) {\n");
-        code.append("    if (").append(input.getCondition1()).append(") {\n");
-        code.append("        if (").append(input.getCondition2()).append(") {\n");
-        code.append("            ").append(input.getTrueStatement()).append("\n");
-        code.append("        } else {\n");
-        code.append("            ").append(input.getFalseStatement1()).append("\n");
-        code.append("        }\n");
-        code.append("    } else {\n");
-        code.append("        ").append(input.getFalseStatement2()).append("\n");
-        code.append("    }\n");
-        code.append("}");
-        return code.toString();
+    private void appendIfElse(StringBuilder code, IfElseInput ifElseInput, int indentLevel) {
+        String indent = "    ".repeat(indentLevel);
+        
+        // Append the if statement
+        code.append(indent).append("if (").append(ifElseInput.getCondition()).append(") {\n");
+        code.append(indent).append("    ").append(ifElseInput.getTrueStatement()).append("\n");
+        
+        // Check for an inner if-else block
+        if (ifElseInput.getInnerIfElse() != null) {
+            appendIfElse(code, ifElseInput.getInnerIfElse(), indentLevel + 1);
+        }
+        
+        // Append the else block if it exists
+        if (ifElseInput.getFalseStatement() != null) {
+            code.append(indent).append("} else {\n");
+            code.append(indent).append("    ").append(ifElseInput.getFalseStatement()).append("\n");
+        }
+
+        code.append(indent).append("}\n");  // Closing the if or else block
     }
+
+    
+    
 
     public String convertLoop(LoopInput input) {
-    	System.out.println(input);
+    	
         StringBuilder code = new StringBuilder();
         code.append("public static void main(String[] args) {\n");
         code.append("    for (").append(input.getInitialization()).append("; ")
@@ -123,7 +138,7 @@ public class FlowDiagramService {
     }
     
     public String convertMultipleNestedLoop(LoopInput outerLoop) {
-    	System.out.println(outerLoop);
+    	
         StringBuilder code = new StringBuilder();
         code.append("public static void main(String[] args) {\n");
         appendNestedLoop(code, outerLoop, 1);
