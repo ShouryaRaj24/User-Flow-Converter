@@ -7,13 +7,14 @@ import com.model.ComplexLoopInput;
 import com.model.IfElseInput;
 import com.model.LoopInput;
 import com.model.NestedIfElseInput;
-import com.model.NestedLoopInput;
+
 import com.model.SwitchCaseInput;
 
 @Service
 public class FlowDiagramService {
 
     public String convertIfElse(IfElseInput input) {
+    	
         StringBuilder code = new StringBuilder();
         code.append("public static void main(String[] args) {\n");
         code.append("    if (").append(input.getCondition()).append(") {\n");
@@ -42,6 +43,7 @@ public class FlowDiagramService {
     }
 
     public String convertLoop(LoopInput input) {
+    	System.out.println(input);
         StringBuilder code = new StringBuilder();
         code.append("public static void main(String[] args) {\n");
         code.append("    for (").append(input.getInitialization()).append("; ")
@@ -57,21 +59,7 @@ public class FlowDiagramService {
         return code.toString();
     }
 
-    public String convertNestedLoop(NestedLoopInput input) {
-        StringBuilder code = new StringBuilder();
-        code.append("public static void main(String[] args) {\n");
-        code.append("    for (").append(input.getInitialization1()).append("; ")
-            .append(input.getCondition1()).append("; ")
-            .append(input.getUpdate1()).append(") {\n");
-        code.append("        for (").append(input.getInitialization2()).append("; ")
-            .append(input.getCondition2()).append("; ")
-            .append(input.getUpdate2()).append(") {\n");
-        code.append("            ").append(input.getStatement()).append("\n");
-        code.append("        }\n");
-        code.append("    }\n");
-        code.append("}");
-        return code.toString();
-    }
+    
 
     public String convertSwitchCase(SwitchCaseInput input) {
         StringBuilder code = new StringBuilder();
@@ -132,6 +120,36 @@ public class FlowDiagramService {
         code.append("                ").append(loopInput.getStatement()).append("\n");
         code.append("            }\n");
         code.append("        }\n");
+    }
+    
+    public String convertMultipleNestedLoop(LoopInput outerLoop) {
+    	System.out.println(outerLoop);
+        StringBuilder code = new StringBuilder();
+        code.append("public static void main(String[] args) {\n");
+        appendNestedLoop(code, outerLoop, 1);
+        code.append("}");
+        return code.toString();
+    }
+
+    private void appendNestedLoop(StringBuilder code, LoopInput loopInput, int indentLevel) {
+        String indent = "    ".repeat(indentLevel);
+        code.append(indent).append("for (").append(loopInput.getInitialization()).append("; ")
+            .append(loopInput.getCondition()).append("; ")
+            .append(loopInput.getUpdate()).append(") {\n");
+        
+        if (loopInput.getCheckCondition() != null && !loopInput.getCheckCondition().equals("true")) {
+            code.append(indent).append("    if (").append(loopInput.getCheckCondition()).append(") {\n");
+            code.append(indent).append("        ").append(loopInput.getStatement()).append("\n");
+            code.append(indent).append("    }\n");
+        } else {
+            code.append(indent).append("    ").append(loopInput.getStatement()).append("\n");
+        }
+
+        if (loopInput.getInnerLoop() != null) {
+            appendNestedLoop(code, loopInput.getInnerLoop(), indentLevel + 1);
+        }
+        
+        code.append(indent).append("}\n");
     }
     
 }

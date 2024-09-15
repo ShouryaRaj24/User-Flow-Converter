@@ -11,5 +11,6 @@ public class LoopInput {
     private String checkCondition;
     private String statement;
 
+    private LoopInput innerLoop;  // New field for nested loop
 
 }

@@ -8,7 +8,7 @@ import com.model.ComplexLoopInput;
 import com.model.IfElseInput;
 import com.model.LoopInput;
 import com.model.NestedIfElseInput;
-import com.model.NestedLoopInput;
+
 import com.model.SwitchCaseInput;
 import com.service.FlowDiagramService;
 
@@ -34,10 +34,16 @@ public class FlowDiagramController {
         return flowDiagramService.convertLoop(input);
     }
 
-    @PostMapping("/nested-loop")
-    public String convertNestedLoop(@RequestBody NestedLoopInput input) {
-        return flowDiagramService.convertNestedLoop(input);
+    @PostMapping("/multiple-nested-loop")
+    public String convertMultipleNestedLoop(@RequestBody LoopInput input) {
+        return flowDiagramService.convertMultipleNestedLoop(input);
     }
+    
+	/*
+	 * @PostMapping("/nested-loop") public String convertNestedLoop(@RequestBody
+	 * NestedLoopInput input) { return flowDiagramService.convertNestedLoop(input);
+	 * }
+	 */
 
     @PostMapping("/switch-case")
     public String convertSwitchCase(@RequestBody SwitchCaseInput input) {
@@ -53,5 +59,6 @@ public class FlowDiagramController {
     public String convertComplexIfElseLoop(@RequestBody ComplexIfElseLoopInput input) {
         return flowDiagramService.convertComplexIfElseLoop(input);
     }
+    
     
 }
